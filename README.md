@@ -1,6 +1,7 @@
 ## Making calls with Twilio
 
 Phone number string format: `'+{Country Code}{Number}'`
+
 Callback response is a Twilio CallInstance object that has various call information. Callback is optional.
 
 ```javascript
