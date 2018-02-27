@@ -4,6 +4,7 @@ const express = require('express');
 const cors = require('cors');
 const rp = require('request-promise');
 const cheerio = require('cheerio');
+const utils = require('./utils');
 
 const keys = require('./keys/keys');      // key for mLab
 
@@ -39,6 +40,12 @@ app.get('/test', (req,res) =>{
   game.save();
 
   res.send("saved fake game");
+});
+
+app.get('/message', (req, res) => {
+  var msg = req.query.msg;
+  res.set('Content-Type', 'text/xml');
+  res.send(utils.generateXML(msg));
 });
 
 app.listen( 3000, () => {
