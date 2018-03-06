@@ -1,7 +1,11 @@
 const rp = require('request-promise');
 const cheerio = require('cheerio');
+const mongoose = require('mongoose');
 
-export function getCompleted(id){
+require('./models/db');                   // schema
+const gameSchema = mongoose.model('gameSchema');
+
+function getCompleted(id){
     const options = {
       uri: 'http://www.espn.com/soccer/match?gameId=' + id,
       transform: function (body) {
@@ -24,23 +28,16 @@ export function getCompleted(id){
                 var txt = $(this).text()
                 scores.push(txt.replace(/\s/g, ""))
             });
+            
+            saveGame(teams, id, scores, time, "0", "Completed");
 
-            var obj = {
-                teams,
-                scores,
-                time
-            }
-
-            console.log(obj);
-
-            return obj
       })
       .catch((err) => {
         console.log(err);
       });
 }
 
-export function getLive(id){
+function getLive(id){
     const options = {
       uri: 'http://www.espn.com/soccer/match?gameId=' + id,
       transform: function (body) {
@@ -65,15 +62,7 @@ export function getLive(id){
                 scores.push(txt.replace(/\s/g, ""))
             });
 
-            var obj = {
-                teams,
-                scores,
-                time
-            }
-
-            console.log(obj);
-
-            return obj
+            saveGame(teams, id, scores, time, "0", "Live");
       })
       .catch((err) => {
         console.log(err);
@@ -81,7 +70,7 @@ export function getLive(id){
 }
 
 
-export function getFuture(id){
+function getFuture(id){
     const options = {
       uri: 'http://www.espn.com/soccer/match?gameId=' + id,
       transform: function (body) {
@@ -110,17 +99,27 @@ export function getFuture(id){
                 scores.push(txt.replace(/\s/g, ""))
             });
 
-            var obj = {
-                teams,
-                score: [0,0],
-                date
-            }
+            saveGame(teams, id, scores, date, "0", "Future");
 
-            console.log(obj)
-
-            return obj
       })
       .catch((err) => {
         console.log(err);
       });
 }
+
+// save game data to database
+function saveGame(teams, id, scores, time, gameTime, status){
+    var game = new gameSchema({
+        "teams": teams,
+        "game_id": id,
+        "goals": scores,
+        "start_details": time,
+        "game_time": gameTime,
+        "active": status
+    });
+
+  game.save();
+}
+
+module.exports = {getCompleted, getLive, getFuture}
+

@@ -6,8 +6,9 @@ var gameSchema = new Schema({
 	teams: [{type: String}],
 	game_id: {type: String},
 	goals: [{type: Number}],
-	start_time: {type: String},
-	start_date: {type: String},
+	// start_time: {type: String},
+	// start_date: {type: String},
+	start_details: {type: String},
 	game_time: {type: String},
 	active: {type: String},
 });
