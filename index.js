@@ -8,8 +8,13 @@ const utils = require('./utils');
 
 const keys = require('./keys/keys');      // key for mLab
 
-require('./models/db');                   // schema
+// game data 
+require('./models/db');                   
 const gameSchema = mongoose.model('gameSchema');
+
+// condition data
+require('./models/conditions');                   
+const conditionSchema = mongoose.model('conditionSchema');
 
 // array of game IDs
 var gameArr = ["499530", "499532", "508496", "508495"];
@@ -28,32 +33,22 @@ app.get('/', (req,res) => {
   res.send("Hello");
 })
 
-// app.get('/test', (req,res) =>{
-
-//   var game = new gameSchema({
-//       teams: ["FC Barcelona", "Real Madrid"],
-//       game_id: "1111",
-//       time_start: "12:00 PST",
-//       goals: [1, 1],
-//       current_time: "12:30 PST",
-//       active: "In progress",
-//   });
-
-//   game.save();
-
-//   res.send("saved fake game");
-// });
-
-// route to scrape and save future games
-// app.get('/saveGames', (req,res) => {
-
-// });
-
 app.get('/message', (req, res) => {
   var msg = req.query.msg;
   res.set('Content-Type', 'text/xml');
   res.send(utils.generateXML(msg));
 });
+
+app.post('/condition', (req,res) => {
+
+    var condition = new conditionSchema({
+        game_id: req.body.game_id,
+        team: req.body.team,
+        goals: req.body.goals
+    })
+
+    condition.save();
+})
 
 app.listen( 3000, () => {
   console.log("listening on 3000");
@@ -65,3 +60,8 @@ for(var i = 0; i < gameArr.length; i++){
     var currGame = funcs.getFuture(gameArr[i]);
 
 }
+
+// route to scrape and save future games
+// app.get('/saveGames', (req,res) => {
+
+// });
