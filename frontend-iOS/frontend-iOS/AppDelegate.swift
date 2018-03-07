@@ -1,8 +1,8 @@
 //
 //  AppDelegate.swift
-//  iOS Frontend
+//  frontend-iOS
 //
-//  Created by Ashwin Vivek on 3/2/18.
+//  Created by Ashwin Vivek on 3/7/18.
 //  Copyright © 2018 cs-m117. All rights reserved.
 //
 

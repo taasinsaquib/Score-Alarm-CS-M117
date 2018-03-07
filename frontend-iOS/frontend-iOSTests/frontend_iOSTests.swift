@@ -1,15 +1,15 @@
 //
-//  iOS_FrontendTests.swift
-//  iOS FrontendTests
+//  frontend_iOSTests.swift
+//  frontend-iOSTests
 //
-//  Created by Ashwin Vivek on 3/2/18.
+//  Created by Ashwin Vivek on 3/7/18.
 //  Copyright © 2018 cs-m117. All rights reserved.
 //
 
 import XCTest
-@testable import iOS_Frontend
+@testable import frontend_iOS
 
-class iOS_FrontendTests: XCTestCase {
+class frontend_iOSTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
