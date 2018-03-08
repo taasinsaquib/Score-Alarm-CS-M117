@@ -2,26 +2,29 @@
 //  FirstViewController.swift
 //  frontend-iOS
 //
-//  Created by Ashwin Vivek on 3/7/18.
+//  Created by Ashwin Vivek on 3/8/18.
 //  Copyright © 2018 cs-m117. All rights reserved.
 //
 
 import UIKit
 
-private let reuseIdentifier = "matchScoresCell"
+class FirstViewController: UITableViewController {
 
-class FirstViewController: UICollectionViewController {
-
+    var testArr1: [[String]] = [["Juventus" , "Tottenham Hotspur"], ["Liverpool FC", "FC Porto"], ["Chelsea FC", "FC Barcelona"]]
+    
+    var testArr2: [[String]] = [["Manchester City" , "FC Basel"], ["Sevilla", "Manchester United"], ["Real Madrid", "Paris Saint-Germain"]]
+    
+    var leagueNameArray: [String] = ["Group A", "Group B"]
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
-        // Register cell classes
-//        self.collectionView!.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
-
-        // Do any additional setup after loading the view.
+        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
+        // self.navigationItem.rightBarButtonItem = self.editButtonItem
+        tableView.clipsToBounds=true
     }
 
     override func didReceiveMemoryWarning() {
@@ -29,67 +32,138 @@ class FirstViewController: UICollectionViewController {
         // Dispose of any resources that can be recreated.
     }
 
+    // MARK: - Table view data source
+
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        // #warning Incomplete implementation, return the number of sections
+        return 2
+    }
+
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        // #warning Incomplete implementation, return the number of rows
+        if(section == 0) {
+            return testArr1.count
+        }
+        return testArr2.count
+    }
+
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        if(indexPath.section == 0) {
+            if(indexPath.row == 0) {
+                let cell = tableView.dequeueReusableCell(withIdentifier: "leagueName") as! LeagueNameTVCell
+                
+                cell.leagueNameLabel.text = leagueNameArray[0]
+                cell.clipsToBounds = true
+                return cell
+            }
+            else {
+                let cell = tableView.dequeueReusableCell(withIdentifier: "matchCell") as! MatchTVCell
+                
+                cell.timeLabel.text = "9:30 AM"
+                
+                cell.team1Label.text = testArr1[indexPath.row-1][0]
+                
+//                cell.team1Label.sizeToFit()
+                cell.team1Label.textAlignment = NSTextAlignment.center
+                
+                cell.team2Label.text = testArr1[indexPath.row-1][1]
+                
+                cell.team2Label.sizeToFit()
+                cell.team2Label.textAlignment = NSTextAlignment.center
+            
+                cell.clipsToBounds = true
+                return cell
+            }
+        }
+        
+        if(indexPath.section == 1) {
+            if(indexPath.row == 0) {
+                let cell = tableView.dequeueReusableCell(withIdentifier: "leagueName") as! LeagueNameTVCell
+                
+                cell.leagueNameLabel.text = leagueNameArray[1]
+                return cell
+            }
+            else {
+                let cell = tableView.dequeueReusableCell(withIdentifier: "matchCell") as! MatchTVCell
+                
+                cell.timeLabel.text = "9:30 AM"
+                
+                cell.team1Label.text = testArr2[indexPath.row-1][0]
+                cell.team1Label.textAlignment = NSTextAlignment.center
+                cell.team1Label.sizeToFit()
+                
+                cell.team2Label.text = testArr2[indexPath.row-1][1]
+                cell.team2Label.textAlignment = NSTextAlignment.center
+                cell.team2Label.sizeToFit()
+                return cell
+            }
+        }
+        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
+
+        return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        
+            if(indexPath.row == 0) {
+                return CGFloat(56)
+            }
+            else {
+                
+                return CGFloat(94)
+            }
+        
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return CGFloat(10)
+    }
+    
+
+    /*
+    // Override to support conditional editing of the table view.
+    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        // Return false if you do not want the specified item to be editable.
+        return true
+    }
+    */
+
+    /*
+    // Override to support editing the table view.
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            // Delete the row from the data source
+            tableView.deleteRows(at: [indexPath], with: .fade)
+        } else if editingStyle == .insert {
+            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+        }    
+    }
+    */
+
+    /*
+    // Override to support rearranging the table view.
+    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
+
+    }
+    */
+
+    /*
+    // Override to support conditional rearranging of the table view.
+    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+        // Return false if you do not want the item to be re-orderable.
+        return true
+    }
+    */
+
     /*
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using [segue destinationViewController].
+        // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
-    }
-    */
-
-    // MARK: UICollectionViewDataSource
-
-    override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 1
-    }
-
-
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of items
-        return 2
-    }
-
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! ScoresCollectionViewCell
-    
-        // Configure the cell
-        cell.tableView.delegate = cell
-        cell.tableView.dataSource = cell
-    
-        return cell
-    }
-
-    // MARK: UICollectionViewDelegate
-
-    /*
-    // Uncomment this method to specify if the specified item should be highlighted during tracking
-    override func collectionView(_ collectionView: UICollectionView, shouldHighlightItemAt indexPath: IndexPath) -> Bool {
-        return true
-    }
-    */
-
-    /*
-    // Uncomment this method to specify if the specified item should be selected
-    override func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-        return true
-    }
-    */
-
-    /*
-    // Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item
-    override func collectionView(_ collectionView: UICollectionView, shouldShowMenuForItemAt indexPath: IndexPath) -> Bool {
-        return false
-    }
-
-    override func collectionView(_ collectionView: UICollectionView, canPerformAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any?) -> Bool {
-        return false
-    }
-
-    override func collectionView(_ collectionView: UICollectionView, performAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any?) {
-    
     }
     */
 
