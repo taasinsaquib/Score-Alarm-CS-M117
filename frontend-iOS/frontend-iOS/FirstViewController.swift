@@ -14,7 +14,17 @@ class FirstViewController: UITableViewController {
     
     var testArr2: [[String]] = [["Manchester City" , "FC Basel"], ["Sevilla", "Manchester United"], ["Real Madrid", "Paris Saint-Germain"]]
     
-    var leagueNameArray: [String] = ["Group A", "Group B"]
+    var headerArray: [String] = ["Scheduled Alarms", "Upcoming Matches"]
+    
+    
+    func shouldLabelWidthChange(label: UILabel) -> Bool{
+        let size = label.text?.size(withAttributes: [.font: label.font]) ?? .zero
+        if(size.width > label.frame.width) {
+            return true
+        }
+        return false
+    }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,6 +35,7 @@ class FirstViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
         tableView.clipsToBounds=true
+        self.tableView.tableFooterView = UIView()
     }
 
     override func didReceiveMemoryWarning() {
@@ -50,27 +61,36 @@ class FirstViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
+        
+        
         if(indexPath.section == 0) {
             if(indexPath.row == 0) {
-                let cell = tableView.dequeueReusableCell(withIdentifier: "leagueName") as! LeagueNameTVCell
+                let cell = tableView.dequeueReusableCell(withIdentifier: "headerName") as! SectionHeaderTVCell
                 
-                cell.leagueNameLabel.text = leagueNameArray[0]
+                cell.headerLabel.text = headerArray[0]
+
                 cell.clipsToBounds = true
                 return cell
             }
             else {
-                let cell = tableView.dequeueReusableCell(withIdentifier: "matchCell") as! MatchTVCell
+                let cell = tableView.dequeueReusableCell(withIdentifier: "scheduledAlarmCell") as! MatchTVCell
+                
+                cell.preservesSuperviewLayoutMargins = false
+                cell.separatorInset = UIEdgeInsets.zero
+                cell.layoutMargins = UIEdgeInsets.zero
                 
                 cell.timeLabel.text = "9:30 AM"
                 
+                //TEAM 1
                 cell.team1Label.text = testArr1[indexPath.row-1][0]
-                
-//                cell.team1Label.sizeToFit()
+
                 cell.team1Label.textAlignment = NSTextAlignment.center
+                cell.team1Label.adjustsFontSizeToFitWidth = true
                 
+                //TEAM 2
                 cell.team2Label.text = testArr1[indexPath.row-1][1]
                 
-                cell.team2Label.sizeToFit()
+                cell.team2Label.adjustsFontSizeToFitWidth = true
                 cell.team2Label.textAlignment = NSTextAlignment.center
             
                 cell.clipsToBounds = true
@@ -80,23 +100,30 @@ class FirstViewController: UITableViewController {
         
         if(indexPath.section == 1) {
             if(indexPath.row == 0) {
-                let cell = tableView.dequeueReusableCell(withIdentifier: "leagueName") as! LeagueNameTVCell
+                let cell = tableView.dequeueReusableCell(withIdentifier: "headerName") as! SectionHeaderTVCell
                 
-                cell.leagueNameLabel.text = leagueNameArray[1]
+                cell.headerLabel.text = headerArray[1]
                 return cell
             }
             else {
-                let cell = tableView.dequeueReusableCell(withIdentifier: "matchCell") as! MatchTVCell
+                let cell = tableView.dequeueReusableCell(withIdentifier: "upcomingMatchCell") as! MatchTVCell
+                
+                cell.preservesSuperviewLayoutMargins = false
+                cell.separatorInset = UIEdgeInsets.zero
+                cell.layoutMargins = UIEdgeInsets.zero
                 
                 cell.timeLabel.text = "9:30 AM"
                 
                 cell.team1Label.text = testArr2[indexPath.row-1][0]
+                cell.team1Label.adjustsFontSizeToFitWidth = true
+
                 cell.team1Label.textAlignment = NSTextAlignment.center
-                cell.team1Label.sizeToFit()
                 
                 cell.team2Label.text = testArr2[indexPath.row-1][1]
+                cell.team2Label.adjustsFontSizeToFitWidth = true
+
                 cell.team2Label.textAlignment = NSTextAlignment.center
-                cell.team2Label.sizeToFit()
+                
                 return cell
             }
         }
@@ -108,7 +135,7 @@ class FirstViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
             if(indexPath.row == 0) {
-                return CGFloat(56)
+                return CGFloat(58)
             }
             else {
                 

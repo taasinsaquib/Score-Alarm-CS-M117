@@ -8,9 +8,9 @@
 
 import UIKit
 
-class LeagueNameTVCell: UITableViewCell {
+class SectionHeaderTVCell: UITableViewCell {
 
-    @IBOutlet weak var leagueNameLabel: UILabel!
+    @IBOutlet weak var headerLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
