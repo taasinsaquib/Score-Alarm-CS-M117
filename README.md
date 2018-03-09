@@ -23,3 +23,10 @@ The server should be running before calling `make_call` because the server provi
 ```
 
 Then copy the 'Forwarding' https address into the `BASE_URL` string in utils.js so that Twilio connects to the right server. The address changes every time ngrok is run, so you have to do this every time. Kind of annoying but it should work.
+
+
+## Running the iOS Frontend
+
+1. Make sure all image assets are imported into your local project. 
+2. Don't commit anything in the frontend-iOS/frontend-ios.xcodeproj/ folder as this leads to nasty merge conflicts.
+3. Run pod install if needed (no pods yet)
