@@ -36,6 +36,8 @@ class FirstViewController: UITableViewController {
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
         tableView.clipsToBounds=true
         self.tableView.tableFooterView = UIView()
+        self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.plain, target:nil, action:nil)
+        self.navigationController?.navigationBar.barTintColor = tableView.backgroundColor
     }
 
     override func didReceiveMemoryWarning() {
@@ -68,6 +70,8 @@ class FirstViewController: UITableViewController {
                 let cell = tableView.dequeueReusableCell(withIdentifier: "headerName") as! SectionHeaderTVCell
                 
                 cell.headerLabel.text = headerArray[0]
+                
+                cell.isUserInteractionEnabled = false
 
                 cell.clipsToBounds = true
                 return cell
@@ -93,6 +97,7 @@ class FirstViewController: UITableViewController {
                 cell.team2Label.adjustsFontSizeToFitWidth = true
                 cell.team2Label.textAlignment = NSTextAlignment.center
             
+                cell.actionButton.setImage(UIImage(named: "settings.jpg"), for: .normal)
                 cell.clipsToBounds = true
                 return cell
             }
@@ -102,6 +107,8 @@ class FirstViewController: UITableViewController {
             if(indexPath.row == 0) {
                 let cell = tableView.dequeueReusableCell(withIdentifier: "headerName") as! SectionHeaderTVCell
                 
+                cell.isUserInteractionEnabled = false
+
                 cell.headerLabel.text = headerArray[1]
                 return cell
             }
@@ -123,6 +130,8 @@ class FirstViewController: UITableViewController {
                 cell.team2Label.adjustsFontSizeToFitWidth = true
 
                 cell.team2Label.textAlignment = NSTextAlignment.center
+                
+                cell.actionButton.setImage(UIImage(named: "alarm-clock.png"), for: .normal)
                 
                 return cell
             }
@@ -148,6 +157,9 @@ class FirstViewController: UITableViewController {
         return CGFloat(10)
     }
     
+    override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        (view as! UITableViewHeaderFooterView).backgroundView?.backgroundColor = UIColor.clear
+    }
 
     /*
     // Override to support conditional editing of the table view.

@@ -13,6 +13,7 @@ class MatchTVCell: UITableViewCell {
     @IBOutlet weak var timeLabel: UILabel!
     @IBOutlet weak var team1Label: UILabel!
     @IBOutlet weak var team2Label: UILabel!
+    @IBOutlet weak var actionButton: UIButton!
     
     
     override func awakeFromNib() {
