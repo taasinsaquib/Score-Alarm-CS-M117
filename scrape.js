@@ -1,3 +1,7 @@
+// TODO: Function to check if game has gone live, then start testing condition
+// TODO: Function that does getLive, but instead of creating new game in db, updates original entry
+// TODO: Separate js files to dump into db, evaluate conditions and handle routes
+
 const rp = require('request-promise');
 const cheerio = require('cheerio');
 const mongoose = require('mongoose');
@@ -28,7 +32,7 @@ function getCompleted(id){
                 var txt = $(this).text()
                 scores.push(txt.replace(/\s/g, ""))
             });
-            
+
             saveGame(teams, id, scores, time, "0", "Completed");
 
       })
@@ -37,7 +41,7 @@ function getCompleted(id){
       });
 }
 
-function getLive(id){
+function getLive(id, conditionHandler){
     const options = {
       uri: 'http://www.espn.com/soccer/match?gameId=' + id,
       transform: function (body) {
@@ -62,7 +66,10 @@ function getLive(id){
                 scores.push(txt.replace(/\s/g, ""))
             });
 
-            saveGame(teams, id, scores, time, "0", "Live");
+            conditionHandler(scores, time)
+
+            if (save)
+                saveGame(teams, id, scores, "Started", time, "Live");
       })
       .catch((err) => {
         console.log(err);
@@ -81,7 +88,6 @@ function getFuture(id){
     rp(options)
       .then(($) => {
             var teams = []
-            var scores = []
             var date = 0
             var time = 0
             $('.short-name').each(function(i, elem) {
@@ -94,12 +100,7 @@ function getFuture(id){
             var d = new Date(div)
             var date = d.toString()
 
-            $('.score').each(function(i, elem) {
-                var txt = $(this).text()
-                scores.push(txt.replace(/\s/g, ""))
-            });
-
-            saveGame(teams, id, scores, date, "0", "Future");
+            saveGame(teams, id, [0,0], date, "0", "Future");
 
       })
       .catch((err) => {
@@ -118,8 +119,8 @@ function saveGame(teams, id, scores, time, gameTime, status){
         "active": status
     });
 
+    console.log("Saved", game);
   game.save();
 }
 
 module.exports = {getCompleted, getLive, getFuture}
-
