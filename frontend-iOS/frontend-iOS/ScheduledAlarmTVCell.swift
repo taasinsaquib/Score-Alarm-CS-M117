@@ -1,5 +1,5 @@
 //
-//  MatchTVCell.swift
+//  ScheduledAlarmTVCell.swift
 //  frontend-iOS
 //
 //  Created by Ashwin Vivek on 3/8/18.
@@ -8,13 +8,12 @@
 
 import UIKit
 
-class MatchTVCell: UITableViewCell {
+class ScheduledAlarmTVCell: UITableViewCell {
 
-    @IBOutlet weak var timeLabel: UILabel!
     @IBOutlet weak var team1Label: UILabel!
     @IBOutlet weak var team2Label: UILabel!
     @IBOutlet weak var actionButton: UIButton!
-    
+    @IBOutlet weak var conditionsTable: UITableView!
     
     override func awakeFromNib() {
         super.awakeFromNib()
