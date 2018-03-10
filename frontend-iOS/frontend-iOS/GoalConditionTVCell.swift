@@ -13,13 +13,19 @@ class GoalConditionTVCell: UITableViewCell, UIPickerViewDelegate, UIPickerViewDa
     @IBOutlet weak var isEnabled: UISwitch!
     @IBOutlet weak var goalPicker: UIPickerView!
     @IBOutlet weak var timePicker: UIPickerView!
-    var teamNames: [String] = ["", "", "Neither"]
+    var teamNames: [String] = ["Juventus", "Real Madrid", "Neither"]
     var isTeamCondition: Bool = false
     
     @IBOutlet weak var label1: UIView!
     @IBOutlet weak var label2: UILabel!
     @IBOutlet weak var label3: UILabel!
     
+    var cellIndex: Int = 0
+    
+    var picker1Val: Any = 0
+    var picker2Val: Int = 1
+    
+    var parentViewController: CreateAlarmViewController!
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
@@ -46,6 +52,42 @@ class GoalConditionTVCell: UITableViewCell, UIPickerViewDelegate, UIPickerViewDa
             
     }
     
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        if let parentVC = self.parentViewController as? CreateAlarmViewController {
+            if(pickerView.tag == 0) {
+                if(isTeamCondition) {
+                    picker1Val = teamNames[row]
+                }
+                else {
+                    picker1Val = String(row+1)
+                }
+            }
+            else {
+                picker2Val = row+1
+            }
+            
+            var templateString = ""
+            if(cellIndex == 0) {
+                templateString = "Goal difference of \(picker1Val) at \(picker2Val) minutes"
+            }
+            else if(cellIndex == 1) {
+                templateString = "\(teamNames[0]) has scored at least \(picker1Val) after \(picker2Val) minutes"
+            }
+            else if(cellIndex == 2) {
+                templateString = "\(teamNames[1]) has scored at least \(picker1Val) after \(picker2Val) minutes"
+            }
+            else if(cellIndex == 3) {
+                if(String(describing: picker1Val) == "Neither") {
+                    templateString = "The game is drawn at \(picker2Val) minutes"
+                }
+                templateString = "\(picker1Val) is leading at \(picker2Val) minutes"
+            }
+            parentVC.chosenConditions[cellIndex] = templateString
+            parentVC.updateLabel(index: cellIndex)
+            
+        }
+    }
+    
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         if(isTeamCondition) {
             if(pickerView.tag == 0) {
@@ -63,6 +105,7 @@ class GoalConditionTVCell: UITableViewCell, UIPickerViewDelegate, UIPickerViewDa
     @objc func switchChanged() {
         if(isEnabled.isOn) {        timePicker.isUserInteractionEnabled = true
             goalPicker.isUserInteractionEnabled = true
+            
             timePicker.alpha = 1
             goalPicker.alpha = 1
             label1.alpha = 1
@@ -72,11 +115,19 @@ class GoalConditionTVCell: UITableViewCell, UIPickerViewDelegate, UIPickerViewDa
         else {
             timePicker.isUserInteractionEnabled = false
             goalPicker.isUserInteractionEnabled = false
+            
             timePicker.alpha = 0.2
             goalPicker.alpha = 0.2
             label1.alpha = 0.2
             label2.alpha = 0.2
             label3.alpha = 0.2
+            
+           
+            if let parentVC = self.parentViewController as? CreateAlarmViewController {
+                parentVC.chosenConditions[cellIndex] = ""
+                parentVC.updateLabel(index: cellIndex)
+            }
+
         }
     }
     
