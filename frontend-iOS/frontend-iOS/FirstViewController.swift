@@ -7,12 +7,16 @@
 //
 
 import UIKit
+import Alamofire
+import SwiftyJSON
 
 class FirstViewController: UITableViewController {
 
     var testArr1: [[String]] = [["Juventus" , "Tottenham Hotspur"], ["Liverpool FC", "FC Porto"], ["Chelsea FC", "FC Barcelona"]]
     
     var testArr2: [[String]] = [["Manchester City" , "FC Basel"], ["Sevilla", "Manchester United"], ["Real Madrid", "Paris Saint-Germain"], ["Manchester City" , "FC Basel"], ["Sevilla", "Manchester United"], ["Real Madrid", "Paris Saint-Germain"]]
+    
+    var upcomingGames: [[String]] = [[]]
     
     var headerArray: [String] = ["Scheduled Alarms", "Upcoming Matches"]
     
@@ -34,10 +38,24 @@ class FirstViewController: UITableViewController {
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
+        
+        
+        
         tableView.clipsToBounds=true
         self.tableView.tableFooterView = UIView()
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.plain, target:nil, action:nil)
         self.navigationItem.title = "Overview"
+        
+        
+        //TODO: Change URL to Heroku URL (when deployed) and parse the JSON array for teams only. Put these teams into the upcomingGames[] array, with each entry being an array of length 2, as in testArr1 and testArr2 (this is what we want)
+        Alamofire.request("https://f3cc8760.ngrok.io/future").responseJSON { (responseData) -> Void in
+            if((responseData.result.value) != nil) {
+                let swiftyJsonVar = JSON(responseData.result.value!)
+                if let userName = swiftyJsonVar[0]["teams"][0].int {
+                    print(userName)
+                }
+             }
+        }
     }
 
     override func didReceiveMemoryWarning() {
