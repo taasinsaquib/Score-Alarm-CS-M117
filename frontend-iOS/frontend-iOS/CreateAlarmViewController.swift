@@ -10,12 +10,20 @@ import UIKit
 
 class CreateAlarmViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    
-    
     @IBOutlet weak var conditionsTable: UITableView!
+    
+    @IBOutlet weak var condition1: UILabel!
+    @IBOutlet weak var condition2: UILabel!
+    @IBOutlet weak var condition3: UILabel!
+    @IBOutlet weak var condition4: UILabel!
+    
     
     var team1: String = "Juventus"
     var team2: String = "Real Madrid"
+    
+    var conditionLabels: [UILabel] = []
+    var chosenConditions: [String] = ["","","",""]
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,11 +31,37 @@ class CreateAlarmViewController: UIViewController, UITableViewDelegate, UITableV
         conditionsTable.delegate = self
         conditionsTable.dataSource = self
         // Do any additional setup after loading the view.
+        conditionLabels.append(condition1)
+        conditionLabels.append(condition2)
+        conditionLabels.append(condition3)
+        conditionLabels.append(condition4)
+    
+        for label in conditionLabels {
+            label.text = ""
+            label.adjustsFontSizeToFitWidth = true
+        }
+        conditionsTable.addBorderBottom(size: 1, color: .black)
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    
+    func updateLabel(index: Int) {
+        var count = 0
+        for condition in chosenConditions {
+            if(condition != "") {
+                conditionLabels[count].text = "• " + condition
+                count+=1
+            }
+        }
+        if(count < 3) {
+            for i in count...3 {
+                conditionLabels[i].text = ""
+            }
+        }
     }
     
     
@@ -38,23 +72,31 @@ class CreateAlarmViewController: UIViewController, UITableViewDelegate, UITableV
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if(indexPath.section == 0) {
             let cell = tableView.dequeueReusableCell(withIdentifier: "goalDifference") as! GoalConditionTVCell
+            cell.parentViewController = self
+            cell.cellIndex = 0
             return cell
         }
         else if(indexPath.section == 1) {
             let cell = tableView.dequeueReusableCell(withIdentifier: "goalsScoredTeam1") as! GoalConditionTVCell
+            cell.parentViewController = self
+            cell.cellIndex = 1
             return cell
         }
         else if(indexPath.section == 2) {
             let cell = tableView.dequeueReusableCell(withIdentifier: "goalsScoredTeam2") as! GoalConditionTVCell
+            cell.parentViewController = self
+            cell.cellIndex = 2
             return cell
         }
         else if(indexPath.section == 3) {
             let cell = tableView.dequeueReusableCell(withIdentifier: "whichTeamLeading") as! GoalConditionTVCell
+            cell.parentViewController = self
             cell.isTeamCondition = true
             
             //TODO: get team name from previous VC
             cell.teamNames[0] = team1
             cell.teamNames[1] = team2
+            cell.cellIndex = 3
             return cell
         }
         let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
@@ -92,6 +134,12 @@ class CreateAlarmViewController: UIViewController, UITableViewDelegate, UITableV
         }
         
         return ret
+    }
+    
+    
+    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        (view as! UITableViewHeaderFooterView).backgroundView?.backgroundColor = UIColor(red:0.03, green:0.12, blue:0.17, alpha:1.0)
+        (view as! UITableViewHeaderFooterView).textLabel?.textColor = UIColor.white
     }
 
     /*
