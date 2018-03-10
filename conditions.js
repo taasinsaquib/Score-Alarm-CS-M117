@@ -1,8 +1,7 @@
 const mongoose = require('mongoose');
-var funcs = require('./scrape.js');
+// var funcs = require('./scrape.js');
 
 const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
 const express = require('express');
 const cors = require('cors');
 const rp = require('request-promise');
@@ -15,7 +14,6 @@ require('./models/conditions');
 const conditionSchema = mongoose.model('conditionSchema');
 
 function testCondition(){
-    console.log("hi");
     conditionSchema.find({"satisfied": false}, (err, conditions) => {
         console.log(conditions);
     });
