@@ -46,7 +46,11 @@ function getGame(id) {
               goals = [0,0]
               game_time = '0'
           }
+          else if (game_time === "FT"){
+              active = "COMPLETED"
+          }
           else {
+              active = "LIVE"
               game_time = game_time.replace(/\'/, "")
           }
 

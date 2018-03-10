@@ -7,6 +7,7 @@ const cheerio = require('cheerio');
 const utils = require('./utils');
 const keys = require('./keys/keys');      // key for mLab
 
+const PORT = process.env.PORT ? process.env.PORT : 3000
 // game data
 require('./models/db');
 const gameSchema = mongoose.model('gameSchema');
@@ -16,7 +17,7 @@ require('./models/conditions');
 const conditionSchema = mongoose.model('conditionSchema');
 
 // array of game IDs
-var gameArr = ["480610", "480606", "480613"];
+var gameArr = ["480610", "502734", "490429"];
 
 // connect to mLab
 mongoose.connect(keys.mongoURI);
@@ -52,11 +53,17 @@ app.get('/live', (req, res) => {
     })
 })
 
+app.get('/completed', (req, res) => {
+    gameSchema.find({active: "COMPLETED"}).then((games) => {
+        res.send(games)
+    })
+})
+
 setInterval(function(){
     gameArr.forEach((g) => {
         funcs.getGame(g)
     })
-}, 5 * 60 * 1000)
+}, 2 * 60 * 1000)
 
 app.post('/condition', (req,res) => {
     var condition = new conditionSchema({
@@ -71,8 +78,8 @@ app.post('/condition', (req,res) => {
     res.send(req.body);
 })
 
-app.listen( 3000, () => {
-  console.log("listening on 3000");
+app.listen( PORT, () => {
+  console.log("listening on ", PORT);
 });
 
 // TODO: delete conditions for games that have completed
