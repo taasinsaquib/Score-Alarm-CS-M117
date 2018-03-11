@@ -115,7 +115,7 @@
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ddY-nt-9JX">
                                             <rect key="frame" x="7" y="38" width="75" height="23"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="17"/>
+                                            <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="14"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
@@ -153,7 +153,7 @@
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <state key="normal" title="Button" image="alarm-clock.png"/>
                                             <connections>
-                                                <segue destination="kQ7-hv-9pX" kind="show" identifier="to" id="ZfK-iV-yQr"/>
+                                                <action selector="actionButtonPressed:" destination="GUx-jh-aOG" eventType="touchUpInside" id="Teu-tn-YaI"/>
                                             </connections>
                                         </button>
                                     </subviews>
@@ -172,10 +172,13 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" id="aBJ-rx-SCw"/>
+                    <connections>
+                        <segue destination="kQ7-hv-9pX" kind="show" identifier="toCreateAlarmVC" id="ECy-FJ-YbJ"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iT7-3K-G8Q" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="152.80000000000001" y="-460.11994002998506"/>
+            <point key="canvasLocation" x="186" y="-401"/>
         </scene>
         <!--Alarm Settings View Controller-->
         <scene sceneID="7NA-xY-2mY">

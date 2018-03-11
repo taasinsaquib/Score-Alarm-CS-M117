@@ -18,8 +18,8 @@ class CreateAlarmViewController: UIViewController, UITableViewDelegate, UITableV
     @IBOutlet weak var condition4: UILabel!
     
     
-    var team1: String = "Juventus"
-    var team2: String = "Real Madrid"
+    var team1: String = ""
+    var team2: String = ""
     
     var conditionLabels: [UILabel] = []
     var chosenConditions: [String] = ["","","",""]

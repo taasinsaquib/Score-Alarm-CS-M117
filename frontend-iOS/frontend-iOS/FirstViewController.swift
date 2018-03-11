@@ -12,14 +12,16 @@ import SwiftyJSON
 
 class FirstViewController: UITableViewController {
 
-    var testArr1: [[String]] = [["Juventus" , "Tottenham Hotspur"], ["Liverpool FC", "FC Porto"], ["Chelsea FC", "FC Barcelona"]]
+    var testArr1: [[String]] = []
     
     var testArr2: [[String]] = [["Manchester City" , "FC Basel"], ["Sevilla", "Manchester United"], ["Real Madrid", "Paris Saint-Germain"], ["Manchester City" , "FC Basel"], ["Sevilla", "Manchester United"], ["Real Madrid", "Paris Saint-Germain"]]
     
-    var upcomingGames: [[String]] = [[]]
+    var upcomingGames: [Game] = []
     
     var headerArray: [String] = ["Scheduled Alarms", "Upcoming Matches"]
     
+    var chosenTeam1: String = ""
+    var chosenTeam2: String = ""
     
     func shouldLabelWidthChange(label: UILabel) -> Bool{
         let size = label.text?.size(withAttributes: [.font: label.font]) ?? .zero
@@ -29,6 +31,20 @@ class FirstViewController: UITableViewController {
         return false
     }
     
+    func formatDate(date: String) -> String {
+        var countSpaces = 0
+        var ret = ""
+        for (index, char) in date.enumerated() {
+            if(char == " ") {
+                countSpaces += 1
+                if(countSpaces == 3) {
+                    let i = date.index(date.startIndex, offsetBy: index)
+                    ret = date.substring(to: i)
+                }
+            }
+        }
+        return ret
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,23 +55,30 @@ class FirstViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
         
-        
+        Alamofire.request("https://5ea977ba.ngrok.io/future").responseJSON(completionHandler: {
+            response in
+            if let value = response.result.value {
+                let json = JSON(value) //Don't forget to import SwiftyJSON
+                self.upcomingGames.removeAll()
+                for game_num in 0...json.count-1 {
+                    var team1 = json[game_num]["teams"][0].stringValue
+                    var team2 = json[game_num]["teams"][1].stringValue
+                    var match = [team1, team2]
+                    var time = json[game_num]["start_details"].stringValue
+                    
+                    var game = Game(teams: match, date: time)
+                    
+                    self.upcomingGames.append(game)
+                }
+                self.tableView.reloadData()
+            }
+        })
         
         tableView.clipsToBounds=true
         self.tableView.tableFooterView = UIView()
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.plain, target:nil, action:nil)
         self.navigationItem.title = "Overview"
         
-        
-        //TODO: Change URL to Heroku URL (when deployed) and parse the JSON array for teams only. Put these teams into the upcomingGames[] array, with each entry being an array of length 2, as in testArr1 and testArr2 (this is what we want)
-        Alamofire.request("https://f3cc8760.ngrok.io/future").responseJSON { (responseData) -> Void in
-            if((responseData.result.value) != nil) {
-                let swiftyJsonVar = JSON(responseData.result.value!)
-                if let userName = swiftyJsonVar[0]["teams"][0].int {
-                    print(userName)
-                }
-             }
-        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -75,7 +98,7 @@ class FirstViewController: UITableViewController {
         if(section == 0) {
             return testArr1.count+1
         }
-        return testArr2.count+1
+        return upcomingGames.count+1
     }
 
     
@@ -135,19 +158,21 @@ class FirstViewController: UITableViewController {
                 cell.separatorInset = UIEdgeInsets.zero
                 cell.layoutMargins = UIEdgeInsets.zero
                 
-                cell.timeLabel.text = "9:30 AM"
+                cell.timeLabel.text = formatDate(date: upcomingGames[indexPath.row-1].date)
                 
-                cell.team1Label.text = testArr2[indexPath.row-1][0]
+                cell.team1Label.text = upcomingGames[indexPath.row-1].teams[0]
                 cell.team1Label.adjustsFontSizeToFitWidth = true
 
                 cell.team1Label.textAlignment = NSTextAlignment.center
                 
-                cell.team2Label.text = testArr2[indexPath.row-1][1]
+                cell.team2Label.text = upcomingGames[indexPath.row-1].teams[1]
                 cell.team2Label.adjustsFontSizeToFitWidth = true
 
                 cell.team2Label.textAlignment = NSTextAlignment.center
                 
                 cell.actionButton.setImage(UIImage(named: "alarm-clock.png"), for: .normal)
+                
+                cell.parentViewController = self
                 
                 return cell
             }
@@ -175,6 +200,12 @@ class FirstViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         (view as! UITableViewHeaderFooterView).backgroundView?.backgroundColor = UIColor.clear
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        var destVC: CreateAlarmViewController = segue.destination as! CreateAlarmViewController
+        destVC.team1 = chosenTeam1
+        destVC.team2 = chosenTeam2
     }
 
 }
