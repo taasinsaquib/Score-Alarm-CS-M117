@@ -59,6 +59,26 @@ app.get('/completed', (req, res) => {
     })
 })
 
+// delete conditions for games that have COMPLETED
+app.get('/cleanConditions', (req,res) => {
+    gameSchema.find({active: "COMPLETED"}).then((games) => {
+    	games.forEach(function(game){
+    		conditionSchema.find({game_id: game.game_id})
+    			.then((conditions) => {
+    				res.send(conditions);
+    				conditions.forEach((condition) => {
+    					condition.remove();
+    				})
+    				
+    			})
+    			.catch((e) => {
+    				console.log(e);
+    			});
+    	});
+    });
+
+});
+
 setInterval(function(){
     gameArr.forEach((g) => {
         funcs.getGame(g)
@@ -82,7 +102,6 @@ app.listen( PORT, () => {
   console.log("listening on ", PORT);
 });
 
-// TODO: delete conditions for games that have completed
 // loops through conditions in db and checks if they've been satisfied
 function testCondition(){
 
