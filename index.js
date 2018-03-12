@@ -134,6 +134,8 @@ app.post('/gameIDs', (req,res) => {
 });
 
 // make call
+// params: number, msg
+// example: /call?number=14088321289&msg=Hello
 app.post('/call', (req,res) => {
   var number = '+' + req.query.number;
   var msg = req.query.msg;
@@ -141,6 +143,17 @@ app.post('/call', (req,res) => {
     res.send(`Made call to ${number} with message:\n${msg}`);
   });
 })
+
+// make sms text
+// params: number, msg
+// example: /text?number=14088321289&msg=Hello
+app.post('/text', (req,res) => {
+  var number = '+' + req.query.number;
+  var msg = req.query.msg;
+  caller.make_sms(number, msg, resp => {
+    res.send(`Made SMS text to ${number} with message:\n${msg}`);
+  })
+});
 
 // var idk = new gameArrSchema({game_ids: ["111111"]})
 // idk.save();
