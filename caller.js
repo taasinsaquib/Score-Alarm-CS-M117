@@ -22,6 +22,7 @@ exports.make_call = function(number, message, cb) {
 };
 
 exports.make_sms = function(number, message, cb) {
+  cb = cb || function(a){};
   client.messages
     .create({
       messagingServiceSid: 'MGc10a7e860a82bc3f0935929595521075',
