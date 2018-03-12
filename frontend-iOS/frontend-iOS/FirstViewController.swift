@@ -11,17 +11,17 @@ import Alamofire
 import SwiftyJSON
 
 class FirstViewController: UITableViewController {
-
-    var testArr1: [[String]] = []
     
     var testArr2: [[String]] = [["Manchester City" , "FC Basel"], ["Sevilla", "Manchester United"], ["Real Madrid", "Paris Saint-Germain"], ["Manchester City" , "FC Basel"], ["Sevilla", "Manchester United"], ["Real Madrid", "Paris Saint-Germain"]]
     
     var upcomingGames: [Game] = []
+    var scheduledAlarms: [Alarm] = []
     
     var headerArray: [String] = ["Scheduled Alarms", "Upcoming Matches"]
     
     var chosenTeam1: String = ""
     var chosenTeam2: String = ""
+    var chosenCell: Int = 0
     
     func shouldLabelWidthChange(label: UILabel) -> Bool{
         let size = label.text?.size(withAttributes: [.font: label.font]) ?? .zero
@@ -61,8 +61,16 @@ class FirstViewController: UITableViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        UserDefaults.standard.set(testArr1, forKey: "setAlarms")
-        tableView.reloadData()
+        
+        var defaults = UserDefaults.standard
+        let encodedData1: Data = NSKeyedArchiver.archivedData(withRootObject: self.scheduledAlarms)
+        defaults.set(encodedData1, forKey: "scheduledAlarms")
+        defaults.synchronize()
+        
+        let encodedData2: Data = NSKeyedArchiver.archivedData(withRootObject: self.upcomingGames)
+        defaults.set(encodedData2, forKey: "upcomingMatches")
+        defaults.synchronize()
+//        tableView.reloadData()
     }
     
     override func viewDidLoad() {
@@ -74,7 +82,7 @@ class FirstViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
         
-        Alamofire.request("https://5d49baf9.ngrok.io/future").responseJSON(completionHandler: {
+        Alamofire.request("https://ec02089b.ngrok.io/future").responseJSON(completionHandler: {
             response in
             if let value = response.result.value {
                 let json = JSON(value) //Don't forget to import SwiftyJSON
@@ -82,13 +90,23 @@ class FirstViewController: UITableViewController {
                 for game_num in 0...json.count-1 {
                     var team1 = json[game_num]["teams"][0].stringValue
                     var team2 = json[game_num]["teams"][1].stringValue
-                    var match = [team1, team2]
+                    
                     var time = json[game_num]["start_details"].stringValue
                     
-                    var game = Game(teams: match, date: time)
+                    let game = Game(team1: team1, team2: team2, date: time)
                     
-                    self.upcomingGames.append(game)
+                    let match = [team1, team2]
+                    
+                    let contains = self.scheduledAlarms.contains(where: { $0.team1 == match[0] && $0.team2 == match[1] })
+                    
+                    if(!contains) {
+                        self.upcomingGames.append(game)
+                    }
                 }
+                var defaults = UserDefaults.standard
+                let encodedData: Data = NSKeyedArchiver.archivedData(withRootObject: self.upcomingGames)
+                defaults.set(encodedData, forKey: "upcomingMatches")
+                defaults.synchronize()
                 self.tableView.reloadData()
             }
         })
@@ -116,10 +134,10 @@ class FirstViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
         if(section == 0) {
-            if(testArr1.count == 0) {
+            if(scheduledAlarms.count == 0) {
                 return 2
             }
-            return testArr1.count+1
+            return scheduledAlarms.count+1
         }
         return upcomingGames.count+1
     }
@@ -139,7 +157,7 @@ class FirstViewController: UITableViewController {
                 return cell
             }
             else {
-                if(testArr1.count == 0) {
+                if(scheduledAlarms.count == 0) {
                     //NO ALARMS
                     let cell = tableView.dequeueReusableCell(withIdentifier: "noAlarmsCell") as! SectionHeaderTVCell
                     return cell
@@ -153,16 +171,18 @@ class FirstViewController: UITableViewController {
 //                cell.timeLabel.text = "9:30 AM"
                 
                 //TEAM 1
-                cell.team1Label.text = testArr1[indexPath.row-1][0]
+                cell.team1Label.text = scheduledAlarms[indexPath.row-1].team1
 
                 cell.team1Label.textAlignment = NSTextAlignment.center
                 cell.team1Label.adjustsFontSizeToFitWidth = true
                 
                 //TEAM 2
-                cell.team2Label.text = testArr1[indexPath.row-1][1]
+                cell.team2Label.text = scheduledAlarms[indexPath.row-1].team2
                 
                 cell.team2Label.adjustsFontSizeToFitWidth = true
                 cell.team2Label.textAlignment = NSTextAlignment.center
+                
+                cell.numConditionsLabel.text = "\(scheduledAlarms[indexPath.row-1].numConditions) conditions"
             
                 cell.actionButton.setImage(UIImage(named: "settings.jpg"), for: .normal)
                 cell.clipsToBounds = true
@@ -188,12 +208,12 @@ class FirstViewController: UITableViewController {
                 
                 cell.timeLabel.text = formatDate(date: upcomingGames[indexPath.row-1].date)
                 
-                cell.team1Label.text = upcomingGames[indexPath.row-1].teams[0]
+                cell.team1Label.text = upcomingGames[indexPath.row-1].team1
                 cell.team1Label.adjustsFontSizeToFitWidth = true
 
                 cell.team1Label.textAlignment = NSTextAlignment.center
                 
-                cell.team2Label.text = upcomingGames[indexPath.row-1].teams[1]
+                cell.team2Label.text = upcomingGames[indexPath.row-1].team2
                 cell.team2Label.adjustsFontSizeToFitWidth = true
 
                 cell.team2Label.textAlignment = NSTextAlignment.center
@@ -201,7 +221,7 @@ class FirstViewController: UITableViewController {
                 cell.actionButton.setImage(UIImage(named: "alarm-clock.png"), for: .normal)
                 
                 cell.parentViewController = self
-                
+                cell.cellIndex = indexPath.row
                 return cell
             }
         }
@@ -234,6 +254,7 @@ class FirstViewController: UITableViewController {
         var destVC: CreateAlarmViewController = segue.destination as! CreateAlarmViewController
         destVC.team1 = chosenTeam1
         destVC.team2 = chosenTeam2
+        destVC.cellIndex = chosenCell
     }
 
 }

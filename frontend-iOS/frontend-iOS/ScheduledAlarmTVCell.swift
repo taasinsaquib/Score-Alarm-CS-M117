@@ -10,10 +10,11 @@ import UIKit
 
 class ScheduledAlarmTVCell: UITableViewCell {
 
+    @IBOutlet weak var numConditionsLabel: UILabel!
     @IBOutlet weak var team1Label: UILabel!
     @IBOutlet weak var team2Label: UILabel!
     @IBOutlet weak var actionButton: UIButton!
-    @IBOutlet weak var conditionsTable: UITableView!
+
     
     override func awakeFromNib() {
         super.awakeFromNib()
