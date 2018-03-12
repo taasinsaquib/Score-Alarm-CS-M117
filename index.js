@@ -6,6 +6,7 @@ const rp = require('request-promise');
 const cheerio = require('cheerio');
 const utils = require('./utils');
 const keys = require('./keys/keys');      // key for mLab
+const caller = require('./caller');
 
 const PORT = process.env.PORT ? process.env.PORT : 3000
 
@@ -78,7 +79,7 @@ app.get('/cleanConditions', (req,res) => {
     				conditions.forEach((condition) => {
     					condition.remove();
     				})
-    				
+
     			})
     			.catch((e) => {
     				console.log(e);
@@ -131,6 +132,15 @@ app.post('/gameIDs', (req,res) => {
 		});
 
 });
+
+// make call
+app.post('/call', (req,res) => {
+  var number = '+' + req.query.number;
+  var msg = req.query.msg;
+  caller.make_call(number, msg, resp => {
+    res.send(`Made call to ${number} with message:\n${msg}`);
+  });
+})
 
 // var idk = new gameArrSchema({game_ids: ["111111"]})
 // idk.save();
@@ -251,7 +261,7 @@ function alertUser(type, team1, team2, goalDiff, team, goals, status, time){
 			console.log(team + " has scored " + goals + " goals!");
 			break;
 
-		case 3: 
+		case 3:
 			console.log("ALERT: Type 3");
 
 			var str = team + " ";
