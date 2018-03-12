@@ -1,6 +1,16 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
+
+/*
+Conditions:
+
+1. Goal difference + At Time
+2. Goals Scored + For Team [At Time]
+3. Team X is Winning/Losing at Time
+
+*/
+
 var conditionSchema = new Schema({
 	type: {type: Number},
 	satisfied: {type: Boolean},
@@ -16,12 +26,3 @@ var conditionSchema = new Schema({
 });
 
 mongoose.model('conditionSchema', conditionSchema);
-
-/*
-Conditions:
-
-1. Goal difference + At Time
-2. Goals Scored + For Team [At Time]
-3. Team X is Winning/Losing at Time
-
-*/
