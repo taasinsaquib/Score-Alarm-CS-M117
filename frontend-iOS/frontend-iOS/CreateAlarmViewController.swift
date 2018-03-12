@@ -151,7 +151,12 @@ class CreateAlarmViewController: UIViewController, UITableViewDelegate, UITableV
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         var destVC: FirstViewController = segue.destination as! FirstViewController
         var match = [team1, team2]
-        destVC.testArr1.append(match)
+        
+        var retrieved: [[String]] = UserDefaults.standard.object(forKey: "setAlarms") as! [[String]]
+        
+        retrieved.append(match)
+        
+        destVC.testArr1 = retrieved
         destVC.tableView.reloadData()
     }
 

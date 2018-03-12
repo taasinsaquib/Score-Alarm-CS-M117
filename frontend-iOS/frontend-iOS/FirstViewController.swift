@@ -31,19 +31,38 @@ class FirstViewController: UITableViewController {
         return false
     }
     
+    // Mon Mar 12 2018 13:00:00 GMT-0700 (PDT) -> Mon Mar 12 13:00
     func formatDate(date: String) -> String {
         var countSpaces = 0
         var ret = ""
+        var k = 0
+        var startOfTime = date.startIndex
+        var endOfTime = date.startIndex
+        var startOfText = date.startIndex
         for (index, char) in date.enumerated() {
             if(char == " ") {
                 countSpaces += 1
+                var i = startOfText
                 if(countSpaces == 3) {
-                    let i = date.index(date.startIndex, offsetBy: index)
+                    i = date.index(startOfText, offsetBy: index)
                     ret = date.substring(to: i)
+                    k = index
+                }
+                if(countSpaces == 4) {
+                    startOfTime = date.index(startOfText, offsetBy: index+1)
+                }
+                if(countSpaces == 5) {
+                    endOfTime = date.index(startOfText, offsetBy: index-3)
+                    ret += "\n" + date[startOfTime..<endOfTime] + " GMT"
                 }
             }
         }
         return ret
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        UserDefaults.standard.set(testArr1, forKey: "setAlarms")
+        tableView.reloadData()
     }
     
     override func viewDidLoad() {
@@ -55,7 +74,7 @@ class FirstViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
         
-        Alamofire.request("https://34d82b60.ngrok.io/future").responseJSON(completionHandler: {
+        Alamofire.request("https://5d49baf9.ngrok.io/future").responseJSON(completionHandler: {
             response in
             if let value = response.result.value {
                 let json = JSON(value) //Don't forget to import SwiftyJSON
