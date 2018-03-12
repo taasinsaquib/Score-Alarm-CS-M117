@@ -8,6 +8,9 @@ const utils = require('./utils');
 const keys = require('./keys/keys');      // key for mLab
 
 const PORT = process.env.PORT ? process.env.PORT : 3000
+
+/********* Schemas ***********/
+
 // game data
 require('./models/db');
 const gameSchema = mongoose.model('gameSchema');
@@ -15,6 +18,12 @@ const gameSchema = mongoose.model('gameSchema');
 // condition data
 require('./models/conditions');
 const conditionSchema = mongoose.model('conditionSchema');
+
+// array of game IDs
+require('./models/gameIDs');
+const gameArrSchema = mongoose.model('gameArrSchema');
+
+/********* Schemas ***********/
 
 // array of game IDs
 var gameArr = ["480610", "502734", "490429"];
@@ -25,11 +34,11 @@ mongoose.Promise = global.Promise;
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 
-var funcs = require('./scrape.js');
+var funcs = require('./scrape.js');		// helper functions
 
 var app = express();
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/', (req,res) => {
   res.send("Hello");
@@ -85,6 +94,9 @@ setInterval(function(){
     })
 }, 2 * 60 * 1000)
 
+/********* POST ***********/
+
+// save conditions to db
 app.post('/condition', (req,res) => {
     var condition = new conditionSchema({
         type: req.body.type,
@@ -96,7 +108,34 @@ app.post('/condition', (req,res) => {
     })
     condition.save();
     res.send(req.body);
-})
+});
+
+// save new gameID to db
+// TODO: Only save id if it isn't already in db
+// TODO: read, update?, delete
+app.post('/gameIDs', (req,res) => {
+
+	gameArrSchema.findOne()
+
+		.then((gameArr) => {
+			for(var i = 0; i < req.body.game_ids.length; i++){
+
+				gameArr.game_ids.push(req.body.game_ids[i]);
+			}
+
+			gameArr.save();
+			res.send(gameArr.game_ids);
+		})
+		.catch((e) => {
+			console.log(e);
+		});
+
+});
+
+// var idk = new gameArrSchema({game_ids: ["111111"]})
+// idk.save();
+
+/********* POST ***********/
 
 app.listen( PORT, () => {
   console.log("listening on ", PORT);
