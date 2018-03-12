@@ -20,9 +20,12 @@ class CreateAlarmViewController: UIViewController, UITableViewDelegate, UITableV
     
     var team1: String = ""
     var team2: String = ""
+    var numConditions: Int = 0
     
     var conditionLabels: [UILabel] = []
     var chosenConditions: [String] = ["","","",""]
+    
+    var cellIndex: Int = 0
     
     @IBAction func setAlarmPressed(_ sender: Any) {
         
@@ -68,6 +71,7 @@ class CreateAlarmViewController: UIViewController, UITableViewDelegate, UITableV
                 conditionLabels[i].text = ""
             }
         }
+        numConditions = count
     }
     
     
@@ -99,7 +103,6 @@ class CreateAlarmViewController: UIViewController, UITableViewDelegate, UITableV
             cell.parentViewController = self
             cell.isTeamCondition = true
             
-            //TODO: get team name from previous VC
             cell.teamNames[0] = team1
             cell.teamNames[1] = team2
             cell.cellIndex = 3
@@ -112,11 +115,7 @@ class CreateAlarmViewController: UIViewController, UITableViewDelegate, UITableV
     
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        
-        
             return CGFloat(100)
-        
-        
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -150,13 +149,27 @@ class CreateAlarmViewController: UIViewController, UITableViewDelegate, UITableV
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         var destVC: FirstViewController = segue.destination as! FirstViewController
-        var match = [team1, team2]
         
-        var retrieved: [[String]] = UserDefaults.standard.object(forKey: "setAlarms") as! [[String]]
         
-        retrieved.append(match)
+        let decoded1  = UserDefaults.standard.data(forKey: "scheduledAlarms") as! Data
         
-        destVC.testArr1 = retrieved
+        var retrievedAlarms = NSKeyedUnarchiver.unarchiveObject(with: decoded1) as! [Alarm]
+        
+
+        
+        
+//        var retrievedUpcomingMatches: [Game] = UserDefaults.standard.object(forKey: "upcomingMatches") as! [Game]
+        
+        retrievedAlarms.append(Alarm(team1: team1, team2: team2, numConditions: numConditions))
+
+        
+        let decoded2  = UserDefaults.standard.data(forKey: "upcomingMatches") as! Data
+        var retrievedUpcomingMatches = NSKeyedUnarchiver.unarchiveObject(with: decoded2) as! [Game]
+        
+        retrievedUpcomingMatches.remove(at: cellIndex-1)
+        
+        destVC.scheduledAlarms = retrievedAlarms
+        destVC.upcomingGames = retrievedUpcomingMatches
         destVC.tableView.reloadData()
     }
 
