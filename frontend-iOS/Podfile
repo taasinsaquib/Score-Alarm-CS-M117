@@ -8,7 +8,7 @@ target 'frontend-iOS' do
   # Pods for frontend-iOS
       pod 'Alamofire'
       pod 'SwiftyJSON'
-
+      pod 'CodableAlamofire'
   target 'frontend-iOSTests' do
     inherit! :search_paths
     # Pods for testing

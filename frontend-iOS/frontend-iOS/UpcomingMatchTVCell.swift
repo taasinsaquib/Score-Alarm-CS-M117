@@ -15,6 +15,15 @@ class UpcomingMatchTVCell: UITableViewCell {
     @IBOutlet weak var team2Label: UILabel!
     @IBOutlet weak var actionButton: UIButton!
     
+    var parentViewController: FirstViewController!
+    
+    @IBAction func actionButtonPressed(_ sender: Any) {
+        if let parentVC = self.parentViewController as? FirstViewController {
+            parentVC.chosenTeam1 = team1Label.text!
+            parentVC.chosenTeam2 = team2Label.text!
+            parentVC.performSegue(withIdentifier: "toCreateAlarmVC", sender: self)
+        }
+    }
     
     override func awakeFromNib() {
         super.awakeFromNib()

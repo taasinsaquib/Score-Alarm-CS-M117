@@ -13,6 +13,7 @@
         <array key="Helvetica.ttc">
             <string>Helvetica</string>
             <string>Helvetica-Bold</string>
+            <string>Helvetica-Light</string>
         </array>
     </customFonts>
     <scenes>
@@ -112,10 +113,10 @@
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="99.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ddY-nt-9JX">
-                                            <rect key="frame" x="7" y="38" width="75" height="23"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ddY-nt-9JX">
+                                            <rect key="frame" x="7" y="11" width="75" height="78"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="17"/>
+                                            <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="14"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
@@ -153,7 +154,7 @@
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <state key="normal" title="Button" image="alarm-clock.png"/>
                                             <connections>
-                                                <segue destination="kQ7-hv-9pX" kind="show" identifier="to" id="ZfK-iV-yQr"/>
+                                                <action selector="actionButtonPressed:" destination="GUx-jh-aOG" eventType="touchUpInside" id="Teu-tn-YaI"/>
                                             </connections>
                                         </button>
                                     </subviews>
@@ -165,6 +166,23 @@
                                     <outlet property="timeLabel" destination="ddY-nt-9JX" id="fuv-8e-rEn"/>
                                 </connections>
                             </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="noAlarmsCell" rowHeight="100" id="kjh-cR-FgU" customClass="SectionHeaderTVCell" customModule="frontend_iOS" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="286" width="375" height="100"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="kjh-cR-FgU" id="v3q-0v-HQL">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="99.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="You currently have no alarms scheduled." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wCA-53-9WQ">
+                                            <rect key="frame" x="32" y="39" width="310" height="21"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" name="Helvetica-Light" family="Helvetica" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                            </tableViewCell>
                         </prototypes>
                         <connections>
                             <outlet property="dataSource" destination="MXJ-cZ-LXh" id="fOF-hu-ygI"/>
@@ -172,10 +190,13 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" id="aBJ-rx-SCw"/>
+                    <connections>
+                        <segue destination="kQ7-hv-9pX" kind="show" identifier="toCreateAlarmVC" id="ECy-FJ-YbJ"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iT7-3K-G8Q" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="152.80000000000001" y="-460.11994002998506"/>
+            <point key="canvasLocation" x="184.80000000000001" y="-401.64917541229386"/>
         </scene>
         <!--Alarm Settings View Controller-->
         <scene sceneID="7NA-xY-2mY">
@@ -453,24 +474,30 @@
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VFh-eO-R57">
                                 <rect key="frame" x="295" y="606" width="72" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Set Alarm!"/>
+                                <state key="normal" title="Set Alarm!">
+                                    <color key="titleColor" red="0.1219704856" green="0.54340629159999998" blue="0.53438956179999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                </state>
+                                <connections>
+                                    <action selector="setAlarmPressed:" destination="kQ7-hv-9pX" eventType="touchUpInside" id="P1Y-nj-kBj"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <viewLayoutGuide key="safeArea" id="Ezq-Vx-c86"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Set Alarm" id="iJP-qc-9gb"/>
+                    <navigationItem key="navigationItem" title="Set Alarm" id="Ayv-f5-TqO" userLabel="Set Alarm"/>
                     <connections>
                         <outlet property="condition1" destination="QB9-tO-Yll" id="51b-EL-ERA"/>
                         <outlet property="condition2" destination="CUU-sB-hrE" id="rQU-Lr-rra"/>
                         <outlet property="condition3" destination="GL8-u4-c0F" id="kyQ-kv-Nfh"/>
                         <outlet property="condition4" destination="AzD-jE-8ON" id="wjp-Hq-X0p"/>
                         <outlet property="conditionsTable" destination="LBI-Vt-sCS" id="KCZ-fw-J12"/>
+                        <segue destination="MXJ-cZ-LXh" kind="show" identifier="addAlarm" id="seG-oT-U4R"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wOC-JG-X0a" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-127.2" y="451.12443778110946"/>
+            <point key="canvasLocation" x="-22" y="399"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="BgB-op-9UJ">
@@ -497,4 +524,8 @@
         <image name="settings.jpg" width="626" height="626"/>
         <image name="vertical-line.jpg" width="3" height="370"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="ECy-FJ-YbJ"/>
+        <segue reference="seG-oT-U4R"/>
+    </inferredMetricsTieBreakers>
 </document>
