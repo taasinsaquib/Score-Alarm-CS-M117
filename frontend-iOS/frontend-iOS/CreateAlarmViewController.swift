@@ -24,6 +24,12 @@ class CreateAlarmViewController: UIViewController, UITableViewDelegate, UITableV
     var conditionLabels: [UILabel] = []
     var chosenConditions: [String] = ["","","",""]
     
+    @IBAction func setAlarmPressed(_ sender: Any) {
+        
+        //TODO: POST to the server
+        
+        performSegue(withIdentifier: "addAlarm", sender: self)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -140,6 +146,13 @@ class CreateAlarmViewController: UIViewController, UITableViewDelegate, UITableV
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         (view as! UITableViewHeaderFooterView).backgroundView?.backgroundColor = UIColor(red:0.03, green:0.12, blue:0.17, alpha:1.0)
         (view as! UITableViewHeaderFooterView).textLabel?.textColor = UIColor.white
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        var destVC: FirstViewController = segue.destination as! FirstViewController
+        var match = [team1, team2]
+        destVC.testArr1.append(match)
+        destVC.tableView.reloadData()
     }
 
     /*

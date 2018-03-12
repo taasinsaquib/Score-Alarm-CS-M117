@@ -55,7 +55,7 @@ class FirstViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
         
-        Alamofire.request("https://5ea977ba.ngrok.io/future").responseJSON(completionHandler: {
+        Alamofire.request("https://34d82b60.ngrok.io/future").responseJSON(completionHandler: {
             response in
             if let value = response.result.value {
                 let json = JSON(value) //Don't forget to import SwiftyJSON
@@ -78,6 +78,7 @@ class FirstViewController: UITableViewController {
         self.tableView.tableFooterView = UIView()
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.plain, target:nil, action:nil)
         self.navigationItem.title = "Overview"
+        self.navigationItem.hidesBackButton = true
         
     }
 
@@ -96,6 +97,9 @@ class FirstViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
         if(section == 0) {
+            if(testArr1.count == 0) {
+                return 2
+            }
             return testArr1.count+1
         }
         return upcomingGames.count+1
@@ -116,6 +120,11 @@ class FirstViewController: UITableViewController {
                 return cell
             }
             else {
+                if(testArr1.count == 0) {
+                    //NO ALARMS
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "noAlarmsCell") as! SectionHeaderTVCell
+                    return cell
+                }
                 let cell = tableView.dequeueReusableCell(withIdentifier: "scheduledAlarmCell") as! ScheduledAlarmTVCell
                 
                 cell.preservesSuperviewLayoutMargins = false
