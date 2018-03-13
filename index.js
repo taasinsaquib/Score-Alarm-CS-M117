@@ -208,7 +208,7 @@ function testCondition(){
                                 }
                                 break;
 
-                            case 3:
+                            case 3:                       // team winning/losing at time
                                 var desiredTime = condition.time;
                                 var currTime = game.game_time;
 
