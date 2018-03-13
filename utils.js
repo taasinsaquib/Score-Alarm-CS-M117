@@ -6,4 +6,4 @@ exports.generateXML = (msg) => {
 }
 
 // Changes every time ngrok is run
-exports.BASE_URL = 'https://22b1d6b7.ngrok.io';
+exports.BASE_URL = 'https://pacific-scrubland-76368.herokuapp.com';

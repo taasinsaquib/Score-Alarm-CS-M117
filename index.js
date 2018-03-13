@@ -198,7 +198,7 @@ function testCondition(){
                                 var currGoals = game.goals[teamIndex];
 
                                 var desiredTime = condition.time;
-                                var currTime = game.game_time                             
+                                var currTime = game.game_time
 
                                 if(currGoals == desiredGoals && (desiredTime == -1 || currTime >= desiredTime)){
                                     alertUser(conditionType, null, null, null, game.teams[teamIndex], desiredGoals, null, null);
@@ -230,7 +230,7 @@ function testCondition(){
                                     else
                                         gameStatus = 1;
 
-                                    alertUser(conditionType, null, null, null, game.teams[teamIndex], null, gameStatus, currTime);                                  
+                                    alertUser(conditionType, null, null, null, game.teams[teamIndex], null, gameStatus, currTime);
                                 }
 
                                 break;
@@ -257,35 +257,36 @@ function testCondition(){
 // format alert to user
 function alertUser(type, team1, team2, goalDiff, team, goals, status, time){
 
-
+  var alert = "";
 	switch(type){
 		case 1:
 			console.log("ALERT: Type 1");
-			console.log("The game: " + team1 + " vs. " + team2 + " has a goal difference of " + goalDiff + "!");
+      alert = "The game: " + team1 + " vs. " + team2 + " has a goal difference of " + goalDiff + "!";
 			break;
 
 		case 2:
 			console.log("ALERT: Type 2");
-			console.log(team + " has scored " + goals + " goals!");
+			alert = team + " has scored " + goals + " goals!";
 			break;
 
 		case 3:
 			console.log("ALERT: Type 3");
 
-			var str = team + " ";
+			alert = team + " ";
 			if(status == 0)
-				str += "is losing";
+				alert += "is losing";
 			else if(status == 1)
-				str += "is winning"
+				alert += "is winning"
 			else if(status == -1)
-				str += "The game is tied"
+				alert += "The game is tied"
 
-			console.log(str + " at time " + time +"'");
 			break;
 
 		default:
 			break;
 	}
+  console.log(alert);
+  caller.make_sms('+14088321289', alert);
 }
 
 // check conditions every minute
