@@ -89,11 +89,11 @@ app.get('/cleanConditions', (req,res) => {
 
 });
 
-setInterval(function(){
-    gameArr.forEach((g) => {
-        funcs.getGame(g)
-    })
-}, 2 * 60 * 1000)
+// setInterval(function(){
+//     gameArr.forEach((g) => {
+//         funcs.getGame(g)
+//     })
+// }, 2 * 60 * 1000)
 
 /********* POST ***********/
 
@@ -294,9 +294,9 @@ function alertUser(type, team1, team2, goalDiff, team, goals, status, time){
 }
 
 // check conditions every minute
-setInterval(function(){
-    testCondition();
-}, 1 * 60 * 1000)
+// setInterval(function(){
+//     testCondition();
+// }, 1 * 60 * 1000)
 
 // testCondition();
 
