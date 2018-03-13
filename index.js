@@ -20,7 +20,7 @@ const gameSchema = mongoose.model('gameSchema');
 require('./models/conditions');
 const conditionSchema = mongoose.model('conditionSchema');
 
-require('./models/gameIds');
+require('./models/ids');
 const gameIdSchema = mongoose.model('gameIdSchema');
 
 // array of game IDs
