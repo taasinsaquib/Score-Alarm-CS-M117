@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 require('./models/db');                   // schema
 const gameSchema = mongoose.model('gameSchema');
 
-require('./models/gameIds');
+require('./models/ids');
 const gameIdSchema = mongoose.model('gameIdSchema');
 
 function getGame(id) {
