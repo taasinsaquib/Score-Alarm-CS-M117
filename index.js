@@ -20,7 +20,7 @@ const gameSchema = mongoose.model('gameSchema');
 require('./models/conditions');
 const conditionSchema = mongoose.model('conditionSchema');
 
-require('./models/gameIds');
+require('./models/ids');
 const gameIdSchema = mongoose.model('gameIdSchema');
 
 // array of game IDs
@@ -73,7 +73,7 @@ app.get('/all', (req, res) => {
             res.send(games)
         })
     })
-})
+});
 
 // delete conditions for games that have COMPLETED
 app.get('/cleanConditions', (req,res) => {
@@ -205,14 +205,14 @@ function testCondition(){
                                 var currGoals = game.goals[teamIndex];
 
                                 var desiredTime = condition.time;
-                                var currTime = game.game_time
+                                var currTime = game.game_time                             
 
                                 if(currGoals == desiredGoals && (desiredTime == -1 || currTime >= desiredTime)){
                                     alertUser(conditionType, null, null, null, game.teams[teamIndex], desiredGoals, null, null);
                                     conditionSchema.update({game_id: condition.game_id}, { $set: { "satisfied": true }}, function(err,condition){
                                         if (err) console.log(err) ;
                                         // res.send(condition);
-                                    });
+                                    });                                
                                 }
                                 else{
                                     console.log("Condition of Type 2 not satisfied", condition);
@@ -241,7 +241,7 @@ function testCondition(){
                                     else
                                         gameStatus = 1;
 
-                                    alertUser(conditionType, null, null, null, game.teams[teamIndex], null, gameStatus, currTime);
+                                    alertUser(conditionType, null, null, null, game.teams[teamIndex], null, gameStatus, currTime);                                  
                                     conditionSchema.update({game_id: condition.game_id}, { $set: { "satisfied": true }}, function(err,condition){
                                         if (err) console.log(err) ;
                                         // res.send(condition);
@@ -273,37 +273,35 @@ function testCondition(){
 // format alert to user
 function alertUser(type, team1, team2, goalDiff, team, goals, status, time){
 
-  var alert = "";
+
 	switch(type){
 		case 1:
 			console.log("ALERT: Type 1");
-      alert = "The game: " + team1 + " vs. " + team2 + " has a goal difference of " + goalDiff + "!";
+			console.log("The game: " + team1 + " vs. " + team2 + " has a goal difference of " + goalDiff + "!");
 			break;
 
 		case 2:
 			console.log("ALERT: Type 2");
-			alert = team + " has scored " + goals + " goals!";
+			console.log(team + " has scored " + goals + " goals!");
 			break;
 
 		case 3:
 			console.log("ALERT: Type 3");
 
-			alert = team + " ";
+			var str = team + " ";
 			if(status == 0)
-				alert += "is losing";
+				str += "is losing";
 			else if(status == 1)
-				alert += "is winning";
+				str += "is winning"
 			else if(status == -1)
-				alert += "The game is tied";
+				str += "The game is tied"
 
+			console.log(str + " at time " + time +"'");
 			break;
 
 		default:
 			break;
 	}
-  console.log(alert);
-  caller.make_sms('+14088321289', alert);
-  caller.make_call('+14088321289', alert);
 }
 
 // check conditions every minute
