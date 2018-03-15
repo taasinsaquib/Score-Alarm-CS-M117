@@ -67,8 +67,11 @@ app.get('/completed', (req, res) => {
 })
 
 app.get('/all', (req, res) => {
-    gameSchema.find({}).then((games) => {
-        res.send(games)
+    gameSchema.find({active: "LIVE"}).then((actives) => {
+        gameSchema.find({active: "FUTURE"}).then((futures) => {
+            var games = actives.concat(futures);
+            res.send(games)
+        })
     })
 })
 
@@ -163,93 +166,107 @@ function testCondition(){
 
     conditionSchema.find({satisfied: false})
 
-    	.then((conditions) => {
+        .then((conditions) => {
 
-    		// loop through each condition
-    		conditions.forEach(function(condition){
+            // loop through each condition
+            conditions.forEach(function(condition){
 
-	            // find game that condition corresponds to
-            	gameSchema.findOne({game_id: condition.game_id})
-                	.then((game) => {
+                // find game that condition corresponds to
+                gameSchema.findOne({game_id: condition.game_id})
+                    .then((game) => {
 
-                		var conditionType = parseInt(condition.type);		// get the condition type
+                        var conditionType = parseInt(condition.type);       // get the condition type
 
-						switch(conditionType){              // handle each type of condition
+                        switch(conditionType){              // handle each type of condition
 
-	                        case 1:                         // goal difference at time
-	                            var desiredGoalDiff = condition.goals;
-	                            var currGoalDiff = Math.abs(game.goals[0] - game.goals[1]);
+                            case 1:                         // goal difference at time
+                                var desiredGoalDiff = condition.goals;
+                                var currGoalDiff = Math.abs(game.goals[0] - game.goals[1]);
 
-	                            var desiredTime = condition.time;
-	                            var currTime = game.game_time
+                                var desiredTime = condition.time;
+                                var currTime = game.game_time
 
-	                            // don't check time rn
-	                            // if((currGoalDiff == desiredGoalDiff) && (currTime >= desiredTime)){
-	                            //     alertUser();
-	                            // }
-	                            if((currGoalDiff == desiredGoalDiff)){
-	                                alertUser(conditionType, game.teams[0], game.teams[1], desiredGoalDiff, null, null, null, null);
-	                            }
-	                            else{
-	                                console.log("Condition of Type 1 not satisfied");
-	                            }
-	                            break;
+                                if((currGoalDiff == desiredGoalDiff)  && (desiredTime == -1 || currTime >= desiredTime)){
+                                    alertUser(conditionType, game.teams[0], game.teams[1], desiredGoalDiff, null, null, null, null);
+                                    conditionSchema.update({game_id: condition.game_id}, { $set: { "satisfied": true }}, function(err,condition){
+                                        if (err) console.log(err) ;
+                                        // res.send(condition);
+                                    });
+                                }
+                                else{
+                                    console.log("Condition Type 1 NOT Satisfied", condition);
+                                }
+                                break;
 
-	                        case 2:                         // goals scored for a team [at a time]
+                            case 2:                         // goals scored for a team [at a time]
 
-	                            var teamIndex = condition.team;
-	                            var desiredGoals = condition.goals;
-	                            var currGoals = game.goals[teamIndex];
+                                var teamIndex = condition.team;
+                                var desiredGoals = condition.goals;
+                                var currGoals = game.goals[teamIndex];
 
-	                            // TODO: check if time is specified in condition
-	                            if(currGoals == desiredGoals){
-	                                alertUser(conditionType, null, null, null, game.teams[teamIndex], desiredGoals, null, null);
-	                            }
-	                            else{
-	                                console.log("Condition of Type 2 not satisfied");
-	                            }
-	                            break;
+                                var desiredTime = condition.time;
+                                var currTime = game.game_time
 
-	                        case 3:
-	                            var desiredTime = condition.time;
-	                            var currTime = game.game_time;
+                                if(currGoals == desiredGoals && (desiredTime == -1 || currTime >= desiredTime)){
+                                    alertUser(conditionType, null, null, null, game.teams[teamIndex], desiredGoals, null, null);
+                                    conditionSchema.update({game_id: condition.game_id}, { $set: { "satisfied": true }}, function(err,condition){
+                                        if (err) console.log(err) ;
+                                        // res.send(condition);
+                                    });
+                                }
+                                else{
+                                    console.log("Condition of Type 2 not satisfied", condition);
+                                }
+                                break;
 
-	                            var teamIndex = condition.team;
-	                            var oppositionIndex;
-	                            if(teamIndex == 0)
-	                                oppositionIndex = 1;
-	                            else
-	                                oppositionIndex = 0;
+                            case 3:
+                                var desiredTime = condition.time;
+                                var currTime = game.game_time;
 
-	                            var goalDiff = game.goals[teamIndex] - game.goals[oppositionIndex];
+                                if(desiredTime == -1 || currTime >= desiredTime){
+                                    var teamIndex = condition.team;
+                                    var oppositionIndex;
+                                    if(teamIndex == 0)
+                                        oppositionIndex = 1;
+                                    else
+                                        oppositionIndex = 0;
 
-	                            var gameStatus;
-	                            if(goalDiff == 0)
-	                            	gameStatus = -1;
-	                            else if(goalDiff < 0)
-	                            	gameStatus = 0;
-	                            else
-	                                gameStatus = 1;
+                                    var goalDiff = game.goals[teamIndex] - game.goals[oppositionIndex];
 
-	                            alertUser(conditionType, null, null, null, game.teams[teamIndex], null, gameStatus, currTime);
-	                            break;
+                                    var gameStatus;
+                                    if(goalDiff == 0)
+                                        gameStatus = -1;
+                                    else if(goalDiff < 0)
+                                        gameStatus = 0;
+                                    else
+                                        gameStatus = 1;
 
-	                        default:
-	                            console.log("invalid condition type");
-	                            break;
-	                    }
-                	})
-                	.catch((e) => {
-                		console.log(e);
-                	})
+                                    alertUser(conditionType, null, null, null, game.teams[teamIndex], null, gameStatus, currTime);
+                                    conditionSchema.update({game_id: condition.game_id}, { $set: { "satisfied": true }}, function(err,condition){
+                                        if (err) console.log(err) ;
+                                        // res.send(condition);
+                                    });
+                                }
+                                else{
+                                    console.log("Condition of Type 3 not satisfied", condition);
+                                }
 
+                                break;
 
-    		})
-    	})
+                            default:
+                                console.log("invalid condition type");
+                                break;
+                        }
+                    })
+                    .catch((e) => {
+                        console.log(e);
+                    });
+            });
+        })
 
-    	.catch((e) => {
-    		console.log(e);
-    	});
+        .catch((e) => {
+            console.log(e);
+        });
 
 }
 
